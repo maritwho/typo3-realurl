@@ -1506,29 +1506,40 @@ class UrlDecoder extends EncodeDecoderBase implements SingletonInterface {
 	}
 
 	/**
+	 * Generates the query string for cHash generation.
+	 *
 	 * @param $requestVariables
 	 *
 	 * @return string
 	 */
 	protected function generateQueryStringForCHash($requestVariables) {
 		$queryStringArray = [];
+		$queryString = '';
 		$initConf = $this->configuration->get('init');
 		$allPostVarSets = array_filter((array)$this->configuration->get('postVarSets'));
 		$postVarSets = $this->getConfigurationForPostVars($allPostVarSets, $requestVariables['id']);
 		foreach ($initConf['generateCHashFor'] as $postVarSetConfig) {
 			foreach ($postVarSets[$postVarSetConfig] as $item) {
 				if (array_key_exists($item['GETvar'], $requestVariables)) {
-					$queryStringArray[] = $item['GETvar'] . '=' . $requestVariables[$item['GETvar']];
+					$queryStringArray[$postVarSetConfig][] = $item['GETvar'] . '=' . $requestVariables[$item['GETvar']];
 				} else {
 					if ($item['noMatch'] !== 'bypass') {
-						$queryStringArray = [];
+						unset($queryStringArray[$postVarSetConfig]);
 						break;
 					}
 				}
 			}
 		}
 
-		return implode('&', $queryStringArray);
+		if (!empty($queryStringArray)) {
+			foreach ($queryStringArray as $postVarStringArray) {
+				if (!empty($postVarStringArray)) {
+					$queryString .= '&' . implode('&', $postVarStringArray);
+				}
+			}
+		}
+
+		return $queryString;
 	}
 
 	/**
