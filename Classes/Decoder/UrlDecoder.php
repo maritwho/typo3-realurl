@@ -1505,6 +1505,11 @@ class UrlDecoder extends EncodeDecoderBase implements SingletonInterface {
 		return $requestVariables;
 	}
 
+	/**
+	 * @param $requestVariables
+	 *
+	 * @return string
+	 */
 	protected function generateQueryStringForCHash($requestVariables) {
 		$queryStringArray = [];
 		$initConf = $this->configuration->get('init');
