@@ -1485,8 +1485,8 @@ class UrlDecoder extends EncodeDecoderBase implements SingletonInterface {
 		$calculateChashIfMissing = (bool)$initConf['calculateChashIfMissing'];
 
 		if ($calculateChashIfMissing == true
-		    && !isset($requestVariables['cHash'])
-		    && empty($requestVariables['cHash'])
+			&& !isset($requestVariables['cHash'])
+			&& empty($requestVariables['cHash'])
 		) {
 			$cHash = '';
 			$queryStringForCHash = $this->generateQueryStringForCHash($requestVariables);
@@ -1536,6 +1536,10 @@ class UrlDecoder extends EncodeDecoderBase implements SingletonInterface {
 				if (!empty($postVarStringArray)) {
 					$queryString .= '&' . implode('&', $postVarStringArray);
 				}
+			}
+			$includePageId = (bool)$GLOBALS['TYPO3_CONF_VARS']['FE']['cacheHash']['includePageId'];
+			if ($includePageId === true) {
+				$queryString = '&id=' . $requestVariables['id'] . $queryString;
 			}
 		}
 
