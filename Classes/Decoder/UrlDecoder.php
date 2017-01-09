@@ -1539,6 +1539,10 @@ class UrlDecoder extends EncodeDecoderBase implements SingletonInterface {
 					$queryString .= '&' . implode('&', $postVarStringArray);
 				}
 			}
+			$includePageId = (bool)$GLOBALS['TYPO3_CONF_VARS']['FE']['cacheHash']['includePageId'];
+			if ($includePageId === true) {
+				$queryString = '&id=' . $requestVariables['id'] . $queryString;
+			}
 		}
 
 		return $queryString;
