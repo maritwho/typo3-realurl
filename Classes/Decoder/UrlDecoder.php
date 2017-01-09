@@ -1485,8 +1485,8 @@ class UrlDecoder extends EncodeDecoderBase implements SingletonInterface {
 		$calculateChashIfMissing = (bool)$initConf['calculateChashIfMissing'];
 
 		if ($calculateChashIfMissing == true
-		    && !isset($requestVariables['cHash'])
-		    && empty($requestVariables['cHash'])
+			&& !isset($requestVariables['cHash'])
+			&& empty($requestVariables['cHash'])
 		) {
 			$cHash = '';
 			$queryStringForCHash = $this->generateQueryStringForCHash($requestVariables);
