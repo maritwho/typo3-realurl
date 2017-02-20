@@ -1376,6 +1376,7 @@ class UrlEncoder extends EncodeDecoderBase {
 	 */
 	protected function validateLanguageParameter($sysLanguageUid) {
 		static $sysLanguages = null;
+        if ($sysLanguageUid == '') $sysLanguageUid = 0;
 
 		if (!MathUtility::canBeInterpretedAsInteger($sysLanguageUid)) {
 			$isValidLanguageUid = false;
