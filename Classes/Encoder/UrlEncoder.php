@@ -1378,7 +1378,12 @@ class UrlEncoder extends EncodeDecoderBase {
 		static $sysLanguages = null;
         if ($sysLanguageUid == '') $sysLanguageUid = 0;
 
-		if (!MathUtility::canBeInterpretedAsInteger($sysLanguageUid)) {
+		if (trim($sysLanguageUid) === '') {
+			// Allow this case because some people use "L=" for the default language.
+			// We convert this to 0 in the setLanguage().
+			$isValidLanguageUid = true;
+		}
+		elseif (!MathUtility::canBeInterpretedAsInteger($sysLanguageUid)) {
 			$isValidLanguageUid = false;
 		}
 		elseif ($sysLanguageUid != 0) {
@@ -1398,10 +1403,11 @@ class UrlEncoder extends EncodeDecoderBase {
 
 		if (!$isValidLanguageUid) {
 			$this->tsfe->set_no_cache(sprintf('Bad "L" parameter ("%s") was detected by realurl', addslashes($sysLanguageUid)));
-			$errorMessage = 'RealURL detected an invalid "L" ' .
-				'parameter value. Bad url is: "' . $this->urlToEncode . '". ' .
-				'More information can be found at https://bit.ly/badLarg';
-			throw new \Exception($errorMessage, 1482160086);
+			$commonErrorMessagePart = 'RealURL could not process "' . $this->urlToEncode . '" because "L" parameter is invalid. ';
+			error_log($commonErrorMessagePart . 'Explanation can be found at ' .
+				'https://bit.ly/badLarg. Stack trace:' . LF . $this->utility->generateStackTrace()
+			);
+			throw new \Exception($commonErrorMessagePart . 'More information can be found in the web server error log.', 1482160086);
 		}
 	}
 }
